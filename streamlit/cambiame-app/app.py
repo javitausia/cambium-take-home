@@ -4,7 +4,7 @@ from pathlib import Path
 import geemap.foliumap as geemap
 import streamlit as st
 
-from src.config import STATIC_FILES_PATH, FILES_DATA_PATH
+from src.config import STATIC_FILES_PATH
 from src.main import CambiumTakeHomeChallenge
 
 st.set_page_config(layout="wide")
