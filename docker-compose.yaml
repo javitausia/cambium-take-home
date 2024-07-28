@@ -1,0 +1,33 @@
+version: "3.8"
+
+services:
+
+  postgres:
+    build:
+      context: .
+      dockerfile: postgres/Dockerfile.postgres
+    container_name: postgres_cambium
+    restart: always
+    environment:
+      - POSTGRES_USER=myuser
+      - POSTGRES_PASSWORD=mypassword
+      - POSTGRES_DB=mydatabase
+    ports:
+      - "5432:5432"
+    volumes:
+      - /var/lib/postgres_data:/var/lib/postgresql/data
+
+  streamlit:
+    build:
+      context: .
+      dockerfile: streamlit/Dockerfile.streamlit
+    container_name: app_cambium
+    ports:
+      - "8501:8501"
+    depends_on:
+      - postgres
+    environment:
+      - POSTGRES_HOST=postgres
+      - POSTGRES_USER=myuser
+      - POSTGRES_PASSWORD=mypassword
+      - POSTGRES_DB=mydatabase
