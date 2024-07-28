@@ -10,10 +10,8 @@ import geemap.foliumap as geemap
 
 def getLandImage(year):
     # Filter the collection by year.
-    land = cambium_challenge.land_usage_ee.filterDate(f"{year}-01-01", f"{int(year) + 1}-01-01").first()
-    # Select the land cover band.
-    # landcover = land.select("landcover")
-    return land
+    landcover = cambium_challenge.land_usage_ee.filterDate(f"{year}-01-01", f"{int(year) + 1}-01-01").first()
+    return landcover
 
 
 st.header("Google Dynamic World V1 Dataset")

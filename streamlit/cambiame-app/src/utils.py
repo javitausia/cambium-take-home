@@ -42,6 +42,7 @@ def load_geojson_file(filename):
 def get_elevation_and_slope_dataset(signed_asset_href):
     # Create rioxarray dataset based on link
     elevation = rioxarray.open_rasterio(signed_asset_href).isel(band=0)
+    elevation = elevation.sortby(["x", "y"])
     # Calculate the gradient in the x and y directions
     dx, dy = np.gradient(elevation, axis=(1, 0))
     # Calculate the slope
@@ -89,7 +90,8 @@ def download_drainage_30m(geometry, path_to_xarray=None):
     if path_to_xarray.exists():
         drainage_xarray = xr.open_dataarray(path_to_xarray)
     else:
-        drainage_xarray = geemap.ee_to_xarray(drainage_ee, geometry=geometry, scale=degrees_lat)
+        drainage_xarray = geemap.ee_to_xarray(drainage_ee, geometry=geometry, scale=degrees_lat).drop_vars("time")
+        drainage_xarray = drainage_xarray.sortby(["lon", "lat"])
         drainage_xarray.to_netcdf(path=path_to_xarray)
     return drainage_ee, drainage_xarray
 
@@ -99,10 +101,11 @@ def download_land_usage_30m(geometry, path_to_xarray=None):
     centroid_lat = geometry.centroid().getInfo()["coordinates"][0]
     degrees_lat, degrees_lon = meters_to_degrees(lat=centroid_lat, meters=30)
     land_usage_ee = ee.ImageCollection('GOOGLE/DYNAMICWORLD/V1')
-    land_usage_ee_filtered = land_usage_ee.filterBounds(geometry).filterDate("2019-12-01", "2020-01-01")
+    land_usage_ee_filtered = land_usage_ee.select("label").filterBounds(geometry).filterDate("2019-12-01", "2020-01-01")
     if path_to_xarray.exists():
         land_usage_xarray = xr.open_dataset(path_to_xarray)
     else:
         land_usage_xarray = geemap.ee_to_xarray(land_usage_ee_filtered, geometry=geometry, scale=degrees_lat)
+        land_usage_xarray = land_usage_xarray.sortby(["lon", "lat"])
         land_usage_xarray.to_netcdf(path=path_to_xarray)
     return land_usage_ee.filterBounds(geometry), land_usage_xarray
