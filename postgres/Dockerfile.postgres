@@ -1,0 +1,43 @@
+# Use the official PostgreSQL image as a base
+FROM postgres:16
+
+# Install PostGIS, H3 extensions, build tools including OpenSSL development packages, and PostgreSQL development files
+RUN apt-get update && \
+    apt-get install -y \
+    build-essential \
+    make \
+    wget \
+    gcc \
+    postgis \
+    postgresql-16-postgis-3 \
+    postgresql-16-postgis-3-scripts \
+    postgresql-16-h3 \
+    libssl-dev \
+    pgxnclient \
+    postgresql-server-dev-16 && \
+    apt-get clean
+
+# Install latest version of cmake
+RUN wget -qO- https://github.com/Kitware/CMake/releases/download/v3.27.5/cmake-3.27.5.tar.gz | tar xz -C /usr/src && \
+    cd /usr/src/cmake-3.27.5 && \
+    ./bootstrap && \
+    make && make install && \
+    rm -rf /usr/src/cmake-3.27.5
+
+# Set PostgreSQL and CMake variables
+ENV POSTGRES_INCLUDE_DIR=/usr/include/postgresql \
+    POSTGRES_LIB_DIR=/usr/lib/x86_64-linux-gnu
+
+# Install H3 extension using PGXN
+# RUN pgxn install h3 && \
+#     pgxn load h3
+
+# Copy the initialization SQL script and custom script into the container
+COPY postgres/init_db.sql /docker-entrypoint-initdb.d/
+COPY postgres/init_db.sh /usr/local/bin/
+
+# Ensure the custom initialization script is executable
+RUN chmod +x /usr/local/bin/init_db.sh
+
+# Set the custom initialization script as the entrypoint
+ENTRYPOINT ["/usr/local/bin/init_db.sh"]
