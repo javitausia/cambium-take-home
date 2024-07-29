@@ -83,7 +83,6 @@ def download_elevation_and_slope_30m(bbox):
 
 
 def download_drainage_30m(geometry, path_to_xarray=None):
-    # TODO: check lat lon meters conversion
     centroid_lat = geometry.centroid().getInfo()["coordinates"][0]
     degrees_lat, degrees_lon = meters_to_degrees(lat=centroid_lat, meters=30)
     drainage_ee = ee.ImageCollection("users/gena/global-hand/hand-100").filterBounds(geometry).mosaic()
@@ -97,7 +96,6 @@ def download_drainage_30m(geometry, path_to_xarray=None):
 
 
 def download_land_usage_30m(geometry, path_to_xarray=None):
-    # TODO: check lat lon meters conversion
     centroid_lat = geometry.centroid().getInfo()["coordinates"][0]
     degrees_lat, degrees_lon = meters_to_degrees(lat=centroid_lat, meters=30)
     land_usage_ee = ee.ImageCollection('GOOGLE/DYNAMICWORLD/V1')
