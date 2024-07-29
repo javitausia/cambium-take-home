@@ -1,19 +1,33 @@
-# Use the official PostgreSQL image as a base
-FROM postgres:16
+FROM postgres:16-bullseye
 
-# Install PostGIS, H3 extensions, build tools including OpenSSL development packages, and PostgreSQL development files
+LABEL maintainer="PostGIS Project - https://postgis.net" \
+      org.opencontainers.image.description="PostGIS 3.4.2+dfsg-1.pgdg110+1 spatial database extension with PostgreSQL 16 bullseye" \
+      org.opencontainers.image.source="https://github.com/postgis/docker-postgis"
+
+ENV POSTGIS_MAJOR 3
+ENV POSTGIS_VERSION 3.4.2+dfsg-1.pgdg110+1
+
+RUN apt-get update \
+      && apt-cache showpkg postgresql-$PG_MAJOR-postgis-$POSTGIS_MAJOR \
+      && apt-get install -y --no-install-recommends \
+           # ca-certificates: for accessing remote raster files;
+           #   fix: https://github.com/postgis/docker-postgis/issues/307
+           ca-certificates \
+           \
+           postgresql-$PG_MAJOR-postgis-$POSTGIS_MAJOR=$POSTGIS_VERSION \
+           postgresql-$PG_MAJOR-postgis-$POSTGIS_MAJOR-scripts \
+      && rm -rf /var/lib/apt/lists/*
+
+# Install H3 dependencies, build tools including OpenSSL development packages, and PostgreSQL development files
 RUN apt-get update && \
     apt-get install -y \
     build-essential \
     make \
     wget \
     gcc \
-    postgis \
-    postgresql-16-postgis-3 \
-    postgresql-16-postgis-3-scripts \
-    postgresql-16-h3 \
     libssl-dev \
     pgxnclient \
+    postgresql-16-h3 \
     postgresql-server-dev-16 && \
     apt-get clean
 
@@ -29,19 +43,8 @@ ENV POSTGRES_INCLUDE_DIR=/usr/include/postgresql \
     POSTGRES_LIB_DIR=/usr/lib/x86_64-linux-gnu
 
 # Install H3 extension using PGXN
-# RUN pgxn install h3 && \
-#     pgxn load h3
+RUN pgxn install h3
 
-# Copy the initialization SQL script and custom script into the container
-COPY postgres/init_db.sql /docker-entrypoint-initdb.d/
-COPY postgres/init_db.sh /usr/local/bin/
-
-# Ensure the custom initialization script is executable
-RUN chmod +x /usr/local/bin/init_db.sh
-
-# Expose the PostgreSQL port
-EXPOSE 5432
-
-# Set the custom initialization script as the entrypoint
-ENTRYPOINT ["/usr/local/bin/init_db.sh"]
-CMD ["postgres"]
+RUN mkdir -p /docker-entrypoint-initdb.d
+COPY postgres/initdb-postgis.sh /docker-entrypoint-initdb.d/10_postgis.sh
+COPY postgres/update-postgis.sh /usr/local/bin

@@ -4,6 +4,7 @@ This repo provides a possible solution to the challenges proposed in [Geospatial
 
 It is divided in two main folders that answer Parts 1 and 2 in the mentioned repository, respectively:
 - For the first part, we just create a docker container that runs PostgreSQL, with PostGIS and h3-pg extensions installed. To check it is running, we connect to the database with PgAdmin.
+![pgadmin](streamlit/images/postgis-running.png)
 - For the second part, a streamlit app is being created that allows the user to upload a .geojson file, and plots the ouput in an interactive map. For simplicity, execute `streamlit/examples/areas_suitability.ipynb`!
 ![streamlit-app](streamlit/images/streamlit-app-running.png)
 
