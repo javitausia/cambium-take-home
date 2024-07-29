@@ -48,6 +48,7 @@ if uploaded_file is not None:
     # To read file as string:
     # string_data = stringio.read()
     # st.write(string_data)
+
     # Instantiate the main class to download and render all data
     cambium_challenge = CambiumTakeHomeChallenge(
         area_of_interest_geojson_filename=uploaded_file.name, area_of_interest_geojson_file=bytes_data
@@ -64,7 +65,7 @@ if uploaded_file is not None:
                 name="Drainage",
                 shown=False)
     m.add_layer(cambium_challenge.land_usage_ee.first(), name="Land Usage", shown=False)
-    # m.add_geojson(cambium_challenge.argentina_protected_area.__geo_interface__, layer_name='Protected Areas')
+    m.add_geojson(cambium_challenge.argentina_protected_area.__geo_interface__, layer_name='Protected Areas')
     elevation_dataset = cambium_challenge.elevation_xarray.assign_coords(time=('time', [0]))
     geemap.xee_to_image(elevation_dataset, filenames=[Path(STATIC_FILES_PATH, "elevation.tif")])
     for layer in [
