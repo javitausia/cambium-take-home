@@ -164,7 +164,7 @@ class CambiumTakeHomeChallenge:
             percentage_of_good_drainage.append(good_drainage_percentage)
             # Check if the area contains wetland, etc
             good_land_usage_percentage = (
-                                                 (land_usage_area.label != 1) & (land_usage_area.label != 4)
+                                                 (land_usage_area.label != 0) & (land_usage_area.label != 1) & (land_usage_area.label != 3) & (land_usage_area.label != 6)
                                          ).sum().values / land_usage_area.label.size * 100
             percentage_of_good_land_usage.append(good_land_usage_percentage)
         areas_to_study["intersects_protected_area"] = intersections_with_protected_area
