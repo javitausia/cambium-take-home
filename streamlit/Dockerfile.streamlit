@@ -16,6 +16,7 @@ RUN echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] http://packages.c
 
 # Copy streamlit app to work on it
 COPY streamlit/cambiame-app .
+COPY streamlit/data/area_protegida.json data/
 
 RUN pip3 install -r requirements.txt
 

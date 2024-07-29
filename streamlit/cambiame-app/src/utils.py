@@ -89,7 +89,8 @@ def download_drainage_30m(geometry, path_to_xarray=None):
     if path_to_xarray.exists():
         drainage_xarray = xr.open_dataarray(path_to_xarray)
     else:
-        drainage_xarray = geemap.ee_to_xarray(drainage_ee, geometry=geometry, scale=degrees_lat).drop_vars("time")
+        drainage_xarray = geemap.ee_to_xarray(drainage_ee, geometry=geometry, scale=degrees_lat,
+                                              ee_initialize=False).drop_vars("time")
         drainage_xarray = drainage_xarray.sortby(["lon", "lat"]).b1  # As just one band is available
         drainage_xarray.to_netcdf(path=path_to_xarray)
     return drainage_ee, drainage_xarray
@@ -103,7 +104,8 @@ def download_land_usage_30m(geometry, path_to_xarray=None):
     if path_to_xarray.exists():
         land_usage_xarray = xr.open_dataset(path_to_xarray)
     else:
-        land_usage_xarray = geemap.ee_to_xarray(land_usage_ee_filtered, geometry=geometry, scale=degrees_lat)
+        land_usage_xarray = geemap.ee_to_xarray(land_usage_ee_filtered, geometry=geometry, scale=degrees_lat,
+                                                ee_initialize=False)
         land_usage_xarray = land_usage_xarray.sortby(["lon", "lat"])
         land_usage_xarray.to_netcdf(path=path_to_xarray)
     return land_usage_ee.filterBounds(geometry), land_usage_xarray

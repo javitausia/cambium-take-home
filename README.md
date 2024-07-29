@@ -1,6 +1,6 @@
 # Cambium Geospatial Data Developer Challenge
 
-This repo is a possible solution to the challenges proposed in [Geospatial Data Developer Take Home Challenge](https://github.com/cambium-earth/gdd-test).
+This repo provides a possible solution to the challenges proposed in [Geospatial Data Developer Take Home Challenge](https://github.com/cambium-earth/gdd-test).
 
 It is divided in two main folders that answer Parts 1 and 2 in the mentioned repository, respectively:
 - For the first part, we just create a docker container that runs PostgreSQL, with PostGIS and h3-pg extensions installed. To check it is running, we connect to the database tih PgAdmin.
@@ -8,7 +8,7 @@ It is divided in two main folders that answer Parts 1 and 2 in the mentioned rep
 
 ## Usage:
 
-> If user does not want to install Docker, requirements.txt can be installed in a conda or pip env. Then, either run the streamlit app or inspect the results using examples/areas_viability.ipynb
+> If user does not want to install Docker, requirements.txt can be installed in a conda or pip env. Then, either run the streamlit app or check the results using examples/areas_suitability.ipynb
 
 To run both the PostgreSQL datatabse and the Streamlit application, we just need to run the following commands:
 
@@ -38,7 +38,7 @@ docker exec -it 434d17caf1f0 /bin/bash
 but replace the id with your container id.
 Finally, run `earthengine authorize` and follow terminal instructions.
 
-You should be all set to acces your application in [localhost:8501](localhost:8501)!
+You should be all set to access your application [here](0.0.0.0:8501)!
 
 ## Questions and Conclusion
 

@@ -39,5 +39,9 @@ COPY postgres/init_db.sh /usr/local/bin/
 # Ensure the custom initialization script is executable
 RUN chmod +x /usr/local/bin/init_db.sh
 
+# Expose the PostgreSQL port
+EXPOSE 5432
+
 # Set the custom initialization script as the entrypoint
 ENTRYPOINT ["/usr/local/bin/init_db.sh"]
+CMD ["postgres"]
