@@ -91,7 +91,7 @@ def download_drainage_30m(geometry, path_to_xarray=None):
         drainage_xarray = xr.open_dataarray(path_to_xarray)
     else:
         drainage_xarray = geemap.ee_to_xarray(drainage_ee, geometry=geometry, scale=degrees_lat).drop_vars("time")
-        drainage_xarray = drainage_xarray.sortby(["lon", "lat"])
+        drainage_xarray = drainage_xarray.sortby(["lon", "lat"]).b1  # As just one band is available
         drainage_xarray.to_netcdf(path=path_to_xarray)
     return drainage_ee, drainage_xarray
 

@@ -55,7 +55,14 @@ if uploaded_file is not None:
     # Plot different layers in geemap
     m = geemap.Map()
     m.add_basemap("SATELLITE")
-    m.add_layer(cambium_challenge.drainage_ee, name="Drainage", shown=False)
+    m.add_layer(cambium_challenge.drainage_ee,
+                vis_params={
+                    "palette": cambium_challenge.drainage_palette,
+                    "vmin": cambium_challenge.drainage_params.get("min"),
+                    "vmax": cambium_challenge.drainage_params.get("max")
+                },
+                name="Drainage",
+                shown=False)
     m.add_layer(cambium_challenge.land_usage_ee.first(), name="Land Usage", shown=False)
     # m.add_geojson(cambium_challenge.argentina_protected_area.__geo_interface__, layer_name='Protected Areas')
     elevation_dataset = cambium_challenge.elevation_xarray.assign_coords(time=('time', [0]))

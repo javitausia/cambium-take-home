@@ -1,5 +1,4 @@
 from pathlib import Path
-from pathlib import Path
 from typing import IO
 
 import ee
@@ -8,7 +7,7 @@ import xarray as xr
 from shapely.geometry import box
 from shapely.geometry.polygon import Polygon
 
-from .config import FILES_DATA_PATH
+from .config import FILES_DATA_PATH, EARTHENGINE_PROJECT
 from .utils import load_geojson_file, download_elevation_and_slope_30m, download_drainage_30m, \
     download_land_usage_30m
 
@@ -23,24 +22,33 @@ def get_final_score_for_area(row):
 
 
 def get_final_label_for_area(row):
-    if row["final_score"] < 10:
+    if row["final_score"] < 30:
         return "Low"
-    elif row["final_score"] < 50:
+    elif row["final_score"] < 70:
         return "Medium"
     else:
         return "High"
 
 
 def get_final_color_for_area(row):
-    if row["final_score"] < 10:
+    if row["final_score"] < 30:
         return "red"
-    elif row["final_score"] < 50:
+    elif row["final_score"] < 70:
         return "orange"
     else:
         return "green"
 
 
 class CambiumTakeHomeChallenge:
+    drainage_palette = [
+        '#0000FF',  # Blue for water (0)
+        '#00FF00',  # Green
+        '#7FFF00',  # Chartreuse
+        '#FFFF00',  # Yellow
+        '#FFA500',  # Orange
+        '#FF4500',  # OrangeRed
+        '#FF0000'  # Red for highest values
+    ]
 
     def __init__(self,
                  area_of_interest_geojson_filename: str = None,
@@ -51,7 +59,7 @@ class CambiumTakeHomeChallenge:
         :param area_of_interest_geojson_file:
         """
 
-        ee.Initialize()  # This starts the ee engine
+        ee.Initialize(project=EARTHENGINE_PROJECT)  # This starts the ee engine
 
         # Load and save area of interest information
         if area_of_interest_geojson_filename:
@@ -80,6 +88,7 @@ class CambiumTakeHomeChallenge:
         self.elevation_xarray: xr.Dataset = None
         self.drainage_ee: ee.ImageCollection = None
         self.drainage_xarray: xr.Dataset = None
+        self.drainage_params: dict = None
         self.land_usage_ee: ee.ImageCollection = None
         self.land_usage_xarray: xr.Dataset = None
         self.argentina_protected_area = gpd.read_file(filename=Path(FILES_DATA_PATH, "area_protegida.json"))
@@ -95,6 +104,10 @@ class CambiumTakeHomeChallenge:
             geometry=self.area_ee_geometry,
             path_to_xarray=Path(self.files_project_path, f"{self.project_name}_drainage.nc")
         )
+        self.drainage_params = {
+            "min": self.drainage_xarray.min().values,
+            "max": self.drainage_xarray.max().values
+        }
         self.land_usage_ee, self.land_usage_xarray = download_land_usage_30m(
             geometry=self.area_ee_geometry,
             path_to_xarray=Path(self.files_project_path, f"{self.project_name}_land_usage.nc")
