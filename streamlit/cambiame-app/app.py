@@ -81,6 +81,7 @@ if uploaded_file is not None:
     #               color="red")
     # Get areas with the study applied ;)
     areas_of_study = cambium_challenge.get_area_viability()
+    print(f"Areas of study to be plotted: {areas_of_study}")
     m.add_geojson(areas_of_study.__geo_interface__,
                   layer_name="Studied Areas",
                   fill_colors=areas_of_study["color"],

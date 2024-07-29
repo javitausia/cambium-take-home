@@ -157,16 +157,17 @@ class CambiumTakeHomeChallenge:
             )
             intersections_with_protected_area.append(intersects_with_protected)
             # Check percentage of good slopes in area
-            good_slope_percentage = elevation_area.binary_slope.sum().values / elevation_area.binary_slope.size * 100
+            good_slope_percentage = round(
+                elevation_area.binary_slope.sum().values / elevation_area.binary_slope.size * 100, 2)
             percentage_of_good_slopes.append(good_slope_percentage)
             # Check percentage of good drainage in area
-            good_drainage_percentage = (drainage_area > 1).sum().values / drainage_area.size * 100
+            good_drainage_percentage = round((drainage_area > 1).sum().values / drainage_area.size * 100, 2)
             percentage_of_good_drainage.append(good_drainage_percentage)
             # Check if the area contains wetland, etc
-            good_land_usage_percentage = (
-                                                 (land_usage_area.label != 0) & (land_usage_area.label != 1) & (
-                                                     land_usage_area.label != 3) & (land_usage_area.label != 6)
-                                         ).sum().values / land_usage_area.label.size * 100
+            good_land_usage_percentage = round((
+                                                       (land_usage_area.label != 0) & (land_usage_area.label != 1) & (
+                                                       land_usage_area.label != 3) & (land_usage_area.label != 6)
+                                               ).sum().values / land_usage_area.label.size * 100, 2)
             percentage_of_good_land_usage.append(good_land_usage_percentage)
         areas_to_study["intersects_protected_area"] = intersections_with_protected_area
         areas_to_study["good_slopes_percentage"] = percentage_of_good_slopes

@@ -5,7 +5,7 @@ This repo provides a possible solution to the challenges proposed in [Geospatial
 It is divided in two main folders that answer Parts 1 and 2 in the mentioned repository, respectively:
 - For the first part, we just create a docker container that runs PostgreSQL, with PostGIS and h3-pg extensions installed. To check it is running, we connect to the database with PgAdmin.
 ![pgadmin](streamlit/images/postgis-running.png)
-- For the second part, a streamlit app is being created that allows the user to upload a .geojson file, and plots the ouput in an interactive map. For simplicity, execute `streamlit/examples/areas_suitability.ipynb`!
+- For the second part, a streamlit app is being created that allows the user to upload a .geojson file, and plots the output in an interactive map. For simplicity, run `streamlit/examples/areas_suitability.ipynb`!
 ![streamlit-app](streamlit/images/streamlit-app-running.png)
 
 ## Usage:
@@ -33,6 +33,7 @@ a53e06a28dcf   cambium-homework-postgres    "/usr/local/bin/init…"   13 minute
 ```
 
 Containers are running, but we just need to authenticate to Google Earth Engine. To do this, we have to create a project in [this link](https://earthengine.google.com/). When the project is created, paste the name in the corresponding variable in `streamlit/cambiame-app/src/config.py`, changing other config related variables if needed.
+
 After changing the configuration when project is created, execute the streamlit container, to access its bash session. In this case, we do:
 ```commandline
 docker exec -it 434d17caf1f0 /bin/bash
@@ -40,7 +41,7 @@ docker exec -it 434d17caf1f0 /bin/bash
 but replace the **id** with your container **id**.
 Finally, run `earthengine authorize` and follow terminal instructions.
 
-You should be all set to access your application [here](0.0.0.0:8501)!
+You should be all set to access your application in [0.0.0.0:8501](0.0.0.0:8501)!
 
 ## Questions and Conclusion
 
@@ -48,9 +49,9 @@ As a summary, I will briefly try to explain the approach I have followed to solv
 
 The first part involves the creation of a docker container, running a PostgreSQL service, so I decided to create a Dockerfile, and run the container using docker-compose.
 
-For the second part, I decided to create a tiny streamlit application, as I really like its UX.
+For the second part, I decided to create a tiny streamlit application, as I really like the results UX, and it is very pythonic.
 Regarding the scientific or technical considerations for the areas classification, I followed the constraints in the challenge instructions. To apply these constraints, I calculate the different percentages of suitable pixels in the provided area given different assumptions, dividing the area in random sub-areas, and then summing them app to calculate a global `final score`.
-Moreover, I discarded protected areas, and areas where the land usage is wetlands or forests.
+Moreover, I discarded protected areas, and areas where the land usage is wetlands or forests are penalized.
 
 - What kind of aspects would you take into account if you were assigned with the task of implementing this type of analysis at scale?
 
